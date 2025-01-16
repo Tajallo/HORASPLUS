@@ -1,0 +1,68 @@
+{
+  "registros": [
+    {
+      "id": "1",
+      "date": "09/10/24",
+      "hours": 4,
+      "timeRange": "21:00 - 01:00",
+      "description": "Mig fil-ics-4",
+      "month": "Octubre 2024"
+    },
+    {
+      "id": "2",
+      "date": "12/10/24",
+      "hours": 1,
+      "timeRange": "10:00",
+      "description": "Veeam Restructurar copias errores",
+      "month": "Octubre 2024"
+    },
+    {
+      "id": "3",
+      "date": "13/10/24",
+      "hours": 1,
+      "timeRange": "07:00",
+      "description": "Veeam Restructurar copias errores",
+      "month": "Octubre 2024"
+    },
+    {
+      "id": "4",
+      "date": "07/11/24",
+      "hours": 2,
+      "timeRange": "21:00 - 23:00",
+      "description": "problema DA accesos remotos",
+      "month": "Noviembre 2024"
+    },
+    {
+      "id": "5",
+      "date": "20/11/24",
+      "hours": 2,
+      "timeRange": "16:00 - 18:00",
+      "description": "H Viladecans problemas",
+      "month": "Noviembre 2024"
+    },
+    {
+      "id": "6",
+      "date": "21/11/24",
+      "hours": 2,
+      "timeRange": "21:00 - 23:00",
+      "description": "Upgrade Netscaler y Problemas ESX",
+      "month": "Noviembre 2024"
+    },
+    {
+      "id": "7",
+      "date": "25/11/24",
+      "hours": 5,
+      "timeRange": "20:00 - 01:00",
+      "description": "Mig FIL-ICS-3",
+      "month": "Noviembre 2024"
+    },
+    {
+      "id": "8",
+      "date": "11/01/25",
+      "hours": 4,
+      "timeRange": "11:00 - 15:00",
+      "description": "Problema espacio en HV con Snapshot",
+      "month": "enero de 2025"
+    }
+  ]
+}
