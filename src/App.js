@@ -19,7 +19,8 @@ function App() {
   const [newEntry, setNewEntry] = useState({
     date: "",
     hours: "",
-    timeRange: "",
+    horaInicio: "",
+    horaFin: "",
     description: "",
   });
 
@@ -44,30 +45,6 @@ function App() {
     }
   };
 
-  // Función para guardar en el servidor JSON
-  const guardarRegistro = async (nuevoRegistro) => {
-    try {
-      const response = await fetch('http://localhost:3001/registros', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(nuevoRegistro)
-      });
-      
-      if (response.ok) {
-        const registroGuardado = await response.json();
-        console.log('Registro guardado exitosamente:', registroGuardado);
-        obtenerRegistros();
-      } else {
-        throw new Error(`Error HTTP: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("Error al guardar:", error);
-      alert("Error al guardar el registro");
-    }
-  };
-
   const handleEditClick = (entry) => {
     setEditingId(entry.id);
     const [day, month, year] = entry.date.split('/');
@@ -76,7 +53,8 @@ function App() {
     setNewEntry({
       date: formattedDate,
       hours: entry.hours,
-      timeRange: entry.timeRange,
+      horaInicio: entry.timeRange.split(' - ')[0],
+      horaFin: entry.timeRange.split(' - ')[1],
       description: entry.description,
     });
   };
@@ -95,7 +73,8 @@ function App() {
         id: editingId, // Asegurarnos de incluir el ID
         date: formattedDate,
         hours: parseFloat(newEntry.hours),
-        timeRange: newEntry.timeRange,
+        horaInicio: newEntry.horaInicio,
+        horaFin: newEntry.horaFin,
         description: newEntry.description,
         month: date.toLocaleString("es-ES", {
           month: "long",
@@ -121,7 +100,8 @@ function App() {
       setNewEntry({
         date: "",
         hours: "",
-        timeRange: "",
+        horaInicio: "",
+        horaFin: "",
         description: "",
       });
 
@@ -129,6 +109,28 @@ function App() {
       console.error("Error:", error);
       alert("Error al actualizar el registro");
     }
+  };
+
+  const calcularHorasTrabajadas = (inicio, fin) => {
+    if (!inicio || !fin) return 0;
+    
+    const [horaInicio, minInicio] = inicio.split(':').map(Number);
+    const [horaFin, minFin] = fin.split(':').map(Number);
+    
+    let horas = horaFin - horaInicio;
+    let minutos = minFin - minInicio;
+    
+    // Si la hora fin es menor que la hora inicio, asumimos que es del día siguiente
+    if (horas < 0) {
+      horas += 24;
+    }
+    
+    if (minutos < 0) {
+      horas--;
+      minutos += 60;
+    }
+    
+    return horas + (minutos / 60);
   };
 
   const handleAddEntry = async (e) => {
@@ -146,10 +148,14 @@ function App() {
         year: "2-digit",
       });
 
+      // Calcular las horas automáticamente
+      const horasTrabajadas = calcularHorasTrabajadas(newEntry.horaInicio, newEntry.horaFin);
+      const timeRange = `${newEntry.horaInicio} - ${newEntry.horaFin}`;
+
       const nuevoRegistro = {
         date: formattedDate,
-        hours: parseFloat(newEntry.hours),
-        timeRange: newEntry.timeRange,
+        hours: horasTrabajadas,
+        timeRange: timeRange,
         description: newEntry.description,
         month: month
       };
@@ -171,7 +177,8 @@ function App() {
       setNewEntry({
         date: "",
         hours: "",
-        timeRange: "",
+        horaInicio: "",
+        horaFin: "",
         description: "",
       });
 
@@ -243,7 +250,7 @@ function App() {
             {editingId ? "Editar Entrada" : "Añadir Nueva Entrada"}
           </h2>
           <form onSubmit={editingId ? handleUpdateEntry : handleAddEntry}
-                className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <input
               type="date"
               value={newEntry.date}
@@ -254,20 +261,18 @@ function App() {
               required
             />
             <input
-              type="number"
-              step="0.5"
-              placeholder="Horas"
-              value={newEntry.hours}
-              onChange={(e) => setNewEntry({ ...newEntry, hours: e.target.value })}
+              type="time"
+              value={newEntry.horaInicio}
+              onChange={(e) => setNewEntry({ ...newEntry, horaInicio: e.target.value })}
               className="border rounded p-2"
               required
             />
             <input
-              type="text"
-              placeholder="Horario (ej: 21:00 - 23:00)"
-              value={newEntry.timeRange}
-              onChange={(e) => setNewEntry({ ...newEntry, timeRange: e.target.value })}
+              type="time"
+              value={newEntry.horaFin}
+              onChange={(e) => setNewEntry({ ...newEntry, horaFin: e.target.value })}
               className="border rounded p-2"
+              required
             />
             <input
               type="text"
@@ -292,7 +297,8 @@ function App() {
                     setNewEntry({
                       date: "",
                       hours: "",
-                      timeRange: "",
+                      horaInicio: "",
+                      horaFin: "",
                       description: "",
                     });
                   }}
