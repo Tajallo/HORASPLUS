@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { exportToExcel } from './utils/excelExport';
 
 function App() {
   // Estados originales para la tabla de entradas
@@ -234,6 +235,19 @@ function App() {
     ? entries
     : entries.filter((entry) => entry.month === selectedMonth);
 
+  const handleExportToExcel = () => {
+    const dataToExport = filteredEntries.map(entry => ({
+      Fecha: entry.date,
+      Horas: entry.hours,
+      Horario: entry.timeRange,
+      Descripción: entry.description,
+      'Horas Compensables': (entry.hours * FACTOR_MULTIPLICADOR).toFixed(2),
+      Mes: entry.month
+    }));
+    
+    exportToExcel(dataToExport, 'registro_horas_extra.xlsx');
+  };
+
   useEffect(() => {
     obtenerRegistros();
   }, []);
@@ -311,7 +325,7 @@ function App() {
           </form>
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 flex justify-between items-center">
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
@@ -324,6 +338,13 @@ function App() {
               </option>
             ))}
           </select>
+
+          <button 
+            onClick={handleExportToExcel}
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
+          >
+            <span>Exportar a Excel</span>
+          </button>
         </div>
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
